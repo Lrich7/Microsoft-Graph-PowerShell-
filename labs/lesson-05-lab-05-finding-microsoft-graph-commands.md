@@ -166,7 +166,7 @@ In this project, you will combine the skills you've learned to explore your Micr
 
 
 ------------------------------------------------------------------------
-Project 01 Completed.
+# Project 01 Completed.
 
 Continue to:
 
