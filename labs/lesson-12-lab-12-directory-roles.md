@@ -128,7 +128,21 @@ ____________________________________________________
 
 # Lab Complete
 
-Continue to:
+------------------------------------------------------------------------
+
+# 🛠️ Project 03 — Microsoft Entra Security Inventory
+
+You have completed the Microsoft Entra Administration section of the course.
+
+Now apply the skills from Lessons 10–12 by completing Project 03.
+
+➡️ **[Project 03 — Microsoft Entra Security Inventory](../projects/project-03-entra-security-inventory.md)**
+
+In this project, you will combine your Microsoft Graph PowerShell skills to inventory Microsoft Entra devices, applications, service principals, and directory roles.
+
+------------------------------------------------------------------------
+
+**Continue to:**
 
 [Lesson 13 --- Microsoft 365 and Microsoft
 Graph](../lessons/lesson-13-microsoft-365-and-microsoft-graph.md)
