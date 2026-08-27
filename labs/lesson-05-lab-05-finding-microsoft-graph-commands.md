@@ -151,6 +151,23 @@ Write the commands you would use:
 
 # Lab Complete
 
+------------------------------------------------------------------------
+NEXT STEP:
+
+# 🛠️ Project 01 — Microsoft Graph Environment Explorer
+
+You have completed the first section of the course.
+
+Now apply the skills from Lessons 01–05 by completing your first project.
+
+➡️ **[Project 01 — Microsoft Graph Environment Explorer](../projects/project-01-graph-environment-explorer.md)**
+
+In this project, you will combine the skills you've learned to explore your Microsoft Graph environment, connection context, modules, commands, and permissions.
+
+
+------------------------------------------------------------------------
+
+
 Continue to:
 
 [Lesson 06 --- Working with
