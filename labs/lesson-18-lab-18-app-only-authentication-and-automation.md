@@ -205,7 +205,96 @@ Add where error handling from Lesson 17 belongs.
 
 # Lab Complete
 
-You have completed the core Microsoft Graph PowerShell lessons.
 
-Continue to the **Projects** section to combine the skills from Lessons
-01--18.
+------------------------------------------------------------------------
+
+# 🏆 Final Project — Microsoft Graph Automation Capstone
+
+You have completed all 18 lessons and labs in the Microsoft Graph PowerShell course.
+
+Now it's time to bring everything together in the final capstone project.
+
+➡️ **[Project 05 — Microsoft Graph Automation Capstone](../projects/project-05-graph-automation-capstone.md)**
+
+In this project, you will combine the skills developed throughout the course to build a practical Microsoft Graph PowerShell automation and reporting solution.
+
+You will apply concepts including:
+
+- Microsoft Graph authentication
+- Permissions and scopes
+- Command discovery
+- Users and groups
+- Microsoft 365 licensing
+- Devices
+- Applications and service principals
+- Directory roles
+- Microsoft 365 workloads
+- Advanced queries
+- Error handling
+- Reliable automation
+- App-only authentication
+
+This project is designed to demonstrate that you can move beyond individual commands and build a complete Microsoft Graph PowerShell solution.
+
+------------------------------------------------------------------------
+
+# 🎯 Finish Strong
+
+Complete the capstone without immediately returning to the lesson instructions whenever possible.
+
+Use the same tools you would use in a real environment:
+
+```text
+Get-Command
+      ↓
+Get-Help
+      ↓
+Find-MgGraphCommand
+      ↓
+Find-MgGraphPermission
+      ↓
+Microsoft Learn
+      ↓
+Test
+      ↓
+Troubleshoot
+      ↓
+Improve
+
+------------------------------------------------------------------------
+
+# 🎓 Course Complete!
+
+Congratulations — you have completed the **Microsoft Graph PowerShell Fundamentals** training course.
+
+You have progressed from making your first Microsoft Graph connection to building a complete Microsoft Graph PowerShell automation solution.
+
+## Where to Go Next
+
+Continue practicing by:
+
+- Building your own Microsoft 365 administration scripts
+- Automating repetitive IT tasks
+- Creating user, group, license, and device reports
+- Improving scripts with logging and error handling
+- Exploring additional Microsoft Graph APIs
+- Practicing app-only authentication
+- Reviewing the cheat sheet and course resources
+- Turning useful scripts into reusable IT administration tools
+
+---
+
+# 📚 Course Resources
+
+➡️ **[Microsoft Graph PowerShell Cheat Sheet](../CheatSheet/cheatsheet.md)**
+
+➡️ **[Microsoft Graph PowerShell Resources](../resources/resources.md)**
+
+➡️ **[Return to Course Home](../README.md)**
+
+---
+
+> The goal was never to memorize every Microsoft Graph command.  
+> The goal was to learn how to **find, understand, safely use, and automate them.**
+
+
