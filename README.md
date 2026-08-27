@@ -1,8 +1,6 @@
 [README.md](https://github.com/user-attachments/files/31531614/README.md)
 # 🔷 Microsoft Graph PowerShell Fundamentals
 
-# 🔷 Microsoft Graph PowerShell Fundamentals
-
 ![Microsoft Graph PowerShell Training](images/graph%20powershell.png)
 
 > A hands-on training guide for learning Microsoft Graph PowerShell and using it for modern Microsoft 365 administration.
