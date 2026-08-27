@@ -175,7 +175,21 @@ potentially more sensitive access:
 
 # Lab Complete
 
-Continue to:
+------------------------------------------------------------------------
+
+# 🛠️ Project 04 — Microsoft 365 Collaboration Audit
+
+You have completed the Microsoft 365 Workloads section of the course.
+
+Now apply the skills from Lessons 13–15 by completing Project 04.
+
+➡️ **[Project 04 — Microsoft 365 Collaboration Audit](../projects/project-04-microsoft-365-collaboration-audit.md)**
+
+In this project, you will combine your Microsoft Graph PowerShell skills to audit Microsoft 365 collaboration resources, including Microsoft Teams, SharePoint, OneDrive, and related information.
+
+------------------------------------------------------------------------
+
+**Continue to:**
 
 [Lesson 16 --- Advanced Queries and
 Pagination](../lessons/lesson-16-advanced-queries-and-pagination.md)
