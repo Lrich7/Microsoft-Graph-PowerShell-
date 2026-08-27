@@ -230,7 +230,20 @@ Then identify SKUs with fewer than 10 available licenses.
 
 # Lab Complete
 
-Continue to:
+------------------------------------------------------------------------
+
+# 🛠️ Project 02 — User, Group & License Audit
+
+You have completed the Identity Administration section of the course.
+
+Now apply the skills from Lessons 06–09 by completing Project 02.
+
+➡️ **[Project 02 — User, Group & License Audit](../projects/project-02-user-group-license-audit.md)**
+
+In this project, you will combine your Microsoft Graph PowerShell skills to audit users, groups, group membership, and Microsoft 365 licensing.
+
+------------------------------------------------------------------------
+**Continue to:**
 
 [Lesson 10 --- Devices in Microsoft Entra
 ID](../lessons/lesson-10-devices-in-microsoft-entra-id.md)
