@@ -1,248 +1,958 @@
-# Lab 18 --- App-Only Authentication and Automation
+[lab-18-app-only-authentication-and-automation-remade.md](https://github.com/user-attachments/files/31532027/lab-18-app-only-authentication-and-automation-remade.md)
+# Lab 18 — App-Only Authentication and Automation
 
 ## Lab Objective
 
-Design an app-only Microsoft Graph automation identity and, if you have
-an authorized lab environment, test a read-only application connection.
+Practice the concepts behind **app-only authentication** for Microsoft Graph PowerShell and prepare a safe structure for unattended automation.
 
-> Do not create production credentials or grant application permissions
-> merely to complete this training lab.
+By the end of this lab, you will be able to:
 
-------------------------------------------------------------------------
+- Explain the difference between delegated and app-only authentication.
+- Identify the Microsoft Entra objects involved in app-only authentication.
+- Understand application permissions and admin consent.
+- Recognize why certificates are preferred for many unattended automation scenarios.
+- Connect to Microsoft Graph using a certificate-based app-only authentication pattern.
+- Verify the Microsoft Graph authentication context.
+- Build a reusable automation structure with validation, error handling, logging, and cleanup.
+- Apply least-privilege principles to unattended Graph automation.
 
-# Exercise 1 --- Compare Authentication Models
+> **Important:** App-only authentication can provide broad access to Microsoft 365 data. Complete configuration exercises only in a tenant where you are authorized to create applications and grant permissions.
+
+---
+
+# Part 1 — Review Authentication Types
+
+Microsoft Graph PowerShell commonly uses two authentication models.
+
+## Delegated Authentication
+
+A user signs in interactively.
+
+Example:
+
+```powershell
+Connect-MgGraph -Scopes 'User.Read.All'
+```
+
+Conceptually:
+
+```text
+User
+  ↓
+Interactive Sign-In
+  ↓
+Delegated Permissions
+  ↓
+Microsoft Graph
+```
+
+## App-Only Authentication
+
+An application authenticates without an interactive user session.
+
+Conceptually:
+
+```text
+Application
+     ↓
+Credential / Certificate
+     ↓
+Application Permissions
+     ↓
+Microsoft Graph
+```
 
 Complete:
 
-  Feature                              Delegated   App-Only
-  ------------------------------------ ----------- ----------
-  Interactive user present                         
-  Uses delegated permissions                       
-  Uses application permissions                     
-  Good fit for unattended automation               
+```text
+Delegated authentication normally has a signed-in user:
+Yes / No
 
-------------------------------------------------------------------------
-
-# Exercise 2 --- Design an Automation
-
-Scenario:
-
-> Every morning, a script exports a read-only inventory of enabled
-> Microsoft Entra users.
-
-Document:
-
-``` text
-Purpose:
-________________________________________
-
-Owner:
-________________________________________
-
-Required data:
-________________________________________
-
-Write access required?
-________________________________________
-
-Likely permission category:
-________________________________________
+App-only authentication is useful for unattended automation:
+Yes / No
 ```
 
-------------------------------------------------------------------------
+---
 
-# Exercise 3 --- Credential Choice
+# Part 2 — Identify the Components
 
-Compare:
+A typical certificate-based app-only configuration involves:
 
-``` text
+```text
+Microsoft Entra Tenant
+        ↓
+App Registration
+        ↓
+Application / Client ID
+        ↓
+Service Principal
+        ↓
+Application Permissions
+        ↓
+Admin Consent
+        ↓
 Certificate
-Client secret
+        ↓
+PowerShell Automation
 ```
 
-Write two reasons a certificate may be preferable for production
-automation:
+Write a short description of each item.
 
-``` text
-1. ____________________________________
+```text
+Tenant ID:
+____________________________________________________
 
-2. ____________________________________
+Application / Client ID:
+____________________________________________________
+
+Service Principal:
+____________________________________________________
+
+Application Permission:
+____________________________________________________
+
+Admin Consent:
+____________________________________________________
+
+Certificate:
+____________________________________________________
 ```
 
-------------------------------------------------------------------------
+---
 
-# Exercise 4 --- Security Checklist
+# Part 3 — Delegated vs. Application Permissions
 
-Complete:
+Review the difference:
 
-``` text
-[ ] Least-privileged permissions
-[ ] Named owner
-[ ] Credential stored securely
-[ ] Credential expiration documented
-[ ] ____________________________________
-[ ] ____________________________________
+```text
+Delegated Permission
+    Used with a signed-in user
+
+Application Permission
+    Used by an application without a signed-in user
 ```
 
-------------------------------------------------------------------------
+Answer:
 
-# Exercise 5 --- Connection Planning
+```text
+Which permission type is normally used for unattended app-only automation?
 
-A certificate-based connection can use a pattern such as:
+____________________________________________________
+```
 
-``` powershell
+Why should app-only permissions be kept as narrow as possible?
+
+```text
+____________________________________________________
+
+____________________________________________________
+```
+
+---
+
+# Part 4 — Plan a Safe Automation Scenario
+
+Imagine that you need a scheduled script that creates a daily report of Microsoft Entra users.
+
+The script only needs to:
+
+```text
+Read users
+Create a local CSV report
+Exit
+```
+
+It does **not** need to:
+
+```text
+Create users
+Delete users
+Change passwords
+Modify groups
+Assign licenses
+Modify directory roles
+```
+
+Before configuring the application, answer:
+
+```text
+Does this script require write permissions?
+Yes / No
+
+Should you request Directory.ReadWrite.All just because it would work?
+Yes / No
+
+Why?
+
+____________________________________________________
+```
+
+The goal is to select the **least-privileged application permission** that supports the required operation.
+
+---
+
+# Part 5 — Discover Permissions
+
+Microsoft Graph PowerShell can help you research permissions.
+
+Run:
+
+```powershell
+Find-MgGraphCommand -Command Get-MgUser
+```
+
+Then inspect permission information:
+
+```powershell
+Find-MgGraphCommand -Command Get-MgUser |
+    Select-Object -First 1 -ExpandProperty Permissions
+```
+
+You can also search:
+
+```powershell
+Find-MgGraphPermission 'User.Read.All'
+```
+
+Record:
+
+```text
+Permission researched:
+____________________________________
+
+Delegated available?
+____________________________________
+
+Application available?
+____________________________________
+
+Admin consent required?
+____________________________________
+```
+
+> Always verify current permission requirements in Microsoft documentation before configuring production automation.
+
+---
+
+# Part 6 — App Registration
+
+If you have permission to create applications in your training or administrative tenant, open the Microsoft Entra admin center:
+
+https://entra.microsoft.com/
+
+Navigate to:
+
+```text
+Identity
+   ↓
+Applications
+   ↓
+App registrations
+```
+
+Create or identify a test application for this lab.
+
+Record:
+
+```text
+Application Name:
+____________________________________
+
+Application (Client) ID:
+____________________________________
+
+Directory (Tenant) ID:
+____________________________________
+```
+
+> Do not publish real tenant identifiers from an organizational environment in a public GitHub repository.
+
+If you are not authorized to create an app registration, review the steps conceptually and continue with the remaining read-only exercises.
+
+---
+
+# Part 7 — Review the Service Principal
+
+An app registration and a service principal are related, but they are not the same object.
+
+Conceptually:
+
+```text
+Application Object
+        ↓
+Defines the application
+
+Service Principal
+        ↓
+Represents the application in a tenant
+```
+
+If connected with appropriate read permissions, discover service principal commands:
+
+```powershell
+Get-Command '*MgServicePrincipal*'
+```
+
+If authorized, locate the service principal associated with your test application.
+
+Record:
+
+```text
+Service Principal Display Name:
+____________________________________
+
+Service Principal Object ID:
+____________________________________
+```
+
+---
+
+# Part 8 — Configure Application Permissions
+
+In the Microsoft Entra admin center, open the test app registration.
+
+Navigate to:
+
+```text
+API permissions
+     ↓
+Add a permission
+     ↓
+Microsoft Graph
+     ↓
+Application permissions
+```
+
+For the training scenario, research the least-privileged permission needed to read the required user information.
+
+Before granting anything, verify:
+
+```text
+[ ] The application is the correct app
+[ ] The permission is required for the task
+[ ] Application permission is actually necessary
+[ ] No broader write permission is being requested
+[ ] You are authorized to grant or request consent
+```
+
+> Application permissions often require administrator consent.
+
+---
+
+# Part 9 — Certificates
+
+Certificates are commonly used to authenticate unattended Graph PowerShell automation without placing a reusable client secret directly in a script.
+
+Conceptually:
+
+```text
+Private key
+    stays protected
+
+Public certificate
+    associated with app registration
+
+PowerShell
+    proves possession of private key
+```
+
+Important rules:
+
+```text
+Never commit a private key to GitHub.
+Never publish a certificate containing its private key.
+Protect certificate stores and exported PFX files.
+Track certificate expiration.
+Plan certificate rotation.
+```
+
+---
+
+# Part 10 — Review Certificates in PowerShell
+
+On Windows, inspect certificates available to your user:
+
+```powershell
+Get-ChildItem Cert:\CurrentUser\My
+```
+
+Useful properties include:
+
+```text
+Subject
+Thumbprint
+NotBefore
+NotAfter
+HasPrivateKey
+```
+
+Create a clean view:
+
+```powershell
+Get-ChildItem Cert:\CurrentUser\My |
+    Select-Object Subject,
+        Thumbprint,
+        NotBefore,
+        NotAfter,
+        HasPrivateKey
+```
+
+Do **not** paste a real private key into your lab notes.
+
+---
+
+# Part 11 — App-Only Connection Pattern
+
+A certificate-based Graph PowerShell connection can follow this pattern:
+
+```powershell
+$TenantId = '<tenant-id>'
+$ClientId = '<application-id>'
+$Thumbprint = '<certificate-thumbprint>'
+
 Connect-MgGraph `
-    -ClientId '<application-id>' `
-    -TenantId '<tenant-id>' `
-    -CertificateThumbprint '<certificate-thumbprint>'
+    -TenantId $TenantId `
+    -ClientId $ClientId `
+    -CertificateThumbprint $Thumbprint
 ```
 
-Identify what each value represents:
+Do not paste real production values into this public training file.
 
-``` text
-ClientId:
-________________________________________
+If your test application and certificate are fully configured and you are authorized to use them, substitute your lab values locally.
 
-TenantId:
-________________________________________
+---
 
-CertificateThumbprint:
-________________________________________
-```
+# Part 12 — Verify the Context
 
-------------------------------------------------------------------------
+After connecting, run:
 
-# Exercise 6 --- Optional Authorized Lab-Tenant Connection
-
-Only if you already have or are authorized to create a dedicated test
-application with read-only permissions:
-
-1.  Configure the application according to your tenant's policy.
-2.  Grant only the required read-only application permission.
-3.  Configure an approved certificate credential.
-4.  Connect with `Connect-MgGraph`.
-5.  Run:
-
-``` powershell
+```powershell
 Get-MgContext
 ```
 
-6.  Verify the tenant and authentication type.
-7.  Run only the read-only test query authorized for the application.
-8.  Disconnect when finished.
+Or:
 
-Do not grant broad write permissions for this exercise.
+```powershell
+$context = Get-MgContext
 
-------------------------------------------------------------------------
-
-# Exercise 7 --- Rotation Plan
-
-Write a simple credential lifecycle:
-
-``` text
-Credential created:
-________________________________________
-
-Expiration tracked in:
-________________________________________
-
-Owner notified:
-________________________________________
-
-Rotation tested:
-________________________________________
+$context |
+    Select-Object Account,
+        TenantId,
+        ClientId,
+        AuthType,
+        Scopes
 ```
 
-------------------------------------------------------------------------
+Record:
 
-# Exercise 8 --- Automation Design
+```text
+Tenant verified?
+Yes / No
 
-Create a flow:
+Client/Application verified?
+Yes / No
 
-``` text
-Scheduled trigger
-      ↓
+Authentication type:
+____________________________________
+```
+
+Never assume a successful connection means you connected to the intended tenant or application.
+
+---
+
+# Part 13 — Test a Read-Only Operation
+
+If your application has the required permission and consent, test a small read-only request first.
+
+Example:
+
+```powershell
+Get-MgUser -Top 5 |
+    Select-Object DisplayName,
+        UserPrincipalName
+```
+
+Use:
+
+```powershell
+-Top 5
+```
+
+while testing instead of immediately retrieving the entire directory.
+
+Record:
+
+```text
+Request successful?
+Yes / No
+
+Number of results:
+____________________________________
+```
+
+---
+
+# Part 14 — Build a Basic Unattended Script
+
+Create:
+
+```text
+graph-user-report.ps1
+```
+
+Start with:
+
+```powershell
+$TenantId = '<tenant-id>'
+$ClientId = '<application-id>'
+$Thumbprint = '<certificate-thumbprint>'
+
+Connect-MgGraph `
+    -TenantId $TenantId `
+    -ClientId $ClientId `
+    -CertificateThumbprint $Thumbprint
+
+Get-MgUser -All `
+    -Property DisplayName,
+        UserPrincipalName,
+        AccountEnabled |
+    Select-Object DisplayName,
+        UserPrincipalName,
+        AccountEnabled |
+    Export-Csv .\graph-users.csv `
+        -NoTypeInformation
+
+Disconnect-MgGraph
+```
+
+This demonstrates the basic automation flow:
+
+```text
 Authenticate
-      ↓
-Verify context
-      ↓
-Run read-only query
-      ↓
-Process results
-      ↓
-Export/report
-      ↓
-Log outcome
-      ↓
-Disconnect/cleanup
+    ↓
+Retrieve
+    ↓
+Process
+    ↓
+Export
+    ↓
+Disconnect
 ```
 
-Add where error handling from Lesson 17 belongs.
+---
 
-------------------------------------------------------------------------
+# Part 15 — Add Context Validation
+
+Improve the script:
+
+```powershell
+$context = Get-MgContext
+
+if ($null -eq $context) {
+    throw 'Microsoft Graph connection was not established.'
+}
+
+if ($context.TenantId -ne $TenantId) {
+    throw 'Connected to an unexpected Microsoft Graph tenant.'
+}
+```
+
+Why is context validation useful for unattended automation?
+
+```text
+____________________________________________________
+
+____________________________________________________
+```
+
+---
+
+# Part 16 — Add Error Handling
+
+Use:
+
+```powershell
+try {
+
+    Connect-MgGraph `
+        -TenantId $TenantId `
+        -ClientId $ClientId `
+        -CertificateThumbprint $Thumbprint `
+        -ErrorAction Stop
+
+    $context = Get-MgContext
+
+    if ($null -eq $context) {
+        throw 'Microsoft Graph connection was not established.'
+    }
+
+    if ($context.TenantId -ne $TenantId) {
+        throw 'Connected to an unexpected tenant.'
+    }
+
+    $users = Get-MgUser `
+        -All `
+        -Property DisplayName,
+            UserPrincipalName,
+            AccountEnabled `
+        -ErrorAction Stop
+
+    $users |
+        Select-Object DisplayName,
+            UserPrincipalName,
+            AccountEnabled |
+        Export-Csv .\graph-users.csv `
+            -NoTypeInformation
+}
+catch {
+    Write-Error "Automation failed: $($_.Exception.Message)"
+}
+finally {
+    Disconnect-MgGraph -ErrorAction SilentlyContinue
+}
+```
+
+The structure is now:
+
+```text
+TRY
+ ↓
+Connect
+ ↓
+Validate
+ ↓
+Retrieve
+ ↓
+Export
+ ↓
+CATCH errors
+ ↓
+FINALLY disconnect
+```
+
+---
+
+# Part 17 — Add Logging
+
+Create a simple log path:
+
+```powershell
+$LogPath = '.\graph-automation.log'
+```
+
+Add:
+
+```powershell
+"$(Get-Date -Format s) - Automation started" |
+    Add-Content $LogPath
+```
+
+After success:
+
+```powershell
+"$(Get-Date -Format s) - User report completed successfully" |
+    Add-Content $LogPath
+```
+
+In the catch block:
+
+```powershell
+"$(Get-Date -Format s) - ERROR: $($_.Exception.Message)" |
+    Add-Content $LogPath
+```
+
+In the finally block:
+
+```powershell
+"$(Get-Date -Format s) - Automation finished" |
+    Add-Content $LogPath
+```
+
+A scheduled script should leave enough information behind to determine whether it ran successfully.
+
+---
+
+# Part 18 — Avoid Hard-Coded Secrets
+
+Which of these should **never** be placed directly into a public script?
+
+```text
+[ ] Password
+[ ] Client secret
+[ ] Access token
+[ ] Private key
+[ ] UserPrincipalName
+[ ] Display name
+```
+
+For automation credentials, prefer secure mechanisms appropriate to the environment.
+
+Examples may include:
+
+```text
+Certificates
+Managed identities where supported
+Secure secret stores
+Platform-managed credentials
+```
+
+---
+
+# Part 19 — Certificate Expiration Check
+
+Certificates expire.
+
+Inspect expiration:
+
+```powershell
+Get-ChildItem Cert:\CurrentUser\My |
+    Select-Object Subject,
+        Thumbprint,
+        NotAfter
+```
+
+Example warning logic:
+
+```powershell
+$WarningDate = (Get-Date).AddDays(30)
+
+Get-ChildItem Cert:\CurrentUser\My |
+    Where-Object {
+        $_.NotAfter -le $WarningDate
+    } |
+    Select-Object Subject,
+        Thumbprint,
+        NotAfter
+```
+
+Why should certificate expiration be monitored?
+
+```text
+____________________________________________________
+
+____________________________________________________
+```
+
+---
+
+# Part 20 — Automation Design Exercise
+
+Design an unattended Graph automation job.
+
+Choose one:
+
+```text
+User inventory
+License inventory
+Device inventory
+Group membership report
+Application inventory
+Directory role audit
+```
+
+Complete:
+
+```text
+Automation Purpose:
+____________________________________________________
+
+Graph Resource:
+____________________________________________________
+
+Graph Command(s):
+____________________________________________________
+
+Required Permission(s):
+____________________________________________________
+
+Delegated or Application:
+____________________________________________________
+
+Authentication Method:
+____________________________________________________
+
+Output:
+____________________________________________________
+
+Logging Method:
+____________________________________________________
+
+Failure Handling:
+____________________________________________________
+
+Schedule:
+____________________________________________________
+```
+
+---
+
+# Part 21 — Production Readiness Checklist
+
+Before calling a Graph script production-ready, verify:
+
+```text
+[ ] Purpose is documented
+[ ] Tenant is validated
+[ ] Application ID is validated
+[ ] Permissions use least privilege
+[ ] Admin consent is documented
+[ ] Certificate/private key is protected
+[ ] Certificate expiration is monitored
+[ ] No secrets are stored in source code
+[ ] Errors are handled
+[ ] Activity is logged
+[ ] Output location is protected
+[ ] Bulk operations are tested safely
+[ ] Script disconnects cleanly
+[ ] Ownership is documented
+[ ] Recovery / rollback is considered for write operations
+```
+
+---
 
 # Knowledge Check
 
-1.  Which authentication model is designed for an application acting
-    without an interactive user?
+## Question 1
 
-    A. App-only B. Delegated only
+Which permission type is normally used for app-only Microsoft Graph authentication?
 
-2.  Do application permissions commonly require administrator consent?
+A. Delegated  
+B. Application  
+C. Local administrator  
+D. NTFS
 
-    A. Yes B. No
+## Question 2
 
-3.  Should a client secret be committed to GitHub?
+Which command shows the current Microsoft Graph PowerShell context?
 
-    A. No B. Yes
+A. `Get-MgContext`  
+B. `Get-MgUser`  
+C. `Get-Module`  
+D. `Get-Credential`
 
-4.  Should a read-only report receive write permissions simply for
-    convenience?
+## Question 3
 
-    A. No B. Yes
+Why is least privilege especially important for app-only automation?
 
-------------------------------------------------------------------------
+A. Applications may run unattended with persistent access  
+B. It makes CSV files smaller  
+C. It changes the tenant ID  
+D. It disables PowerShell
+
+## Question 4
+
+Should a private certificate key be committed to GitHub?
+
+A. Yes  
+B. No
+
+## Question 5
+
+Which block is useful for cleanup such as disconnecting even when an error occurs?
+
+A. `foreach`  
+B. `switch`  
+C. `finally`  
+D. `Where-Object`
+
+## Question 6
+
+What should an unattended script verify after connecting?
+
+A. Only the PowerShell window title  
+B. Tenant and authentication context  
+C. Desktop wallpaper  
+D. File extension
+
+## Question 7
+
+Why should certificate expiration be monitored?
+
+A. An expired authentication certificate can cause automation to fail  
+B. It changes user licenses  
+C. It creates new users  
+D. It increases Graph pagination
+
+---
+
+# Challenge — Build a Reliable Graph Automation Template
+
+Create:
+
+```text
+graph-automation-template.ps1
+```
+
+Your template should contain:
+
+```text
+Configuration variables
+        ↓
+Authentication
+        ↓
+Context validation
+        ↓
+Graph operation
+        ↓
+Data processing
+        ↓
+Export
+        ↓
+Logging
+        ↓
+Error handling
+        ↓
+Cleanup
+```
+
+Use placeholder values rather than committing real tenant credentials or secrets.
+
+Your finished template should be reusable for future Graph automation projects.
+
+---
+
+# Lab Completion Checklist
+
+- [ ] Reviewed delegated vs. app-only authentication
+- [ ] Identified app-only authentication components
+- [ ] Reviewed application permissions
+- [ ] Practiced permission discovery
+- [ ] Reviewed app registration concepts
+- [ ] Reviewed service principal concepts
+- [ ] Reviewed certificate authentication
+- [ ] Inspected local certificates
+- [ ] Reviewed the app-only connection pattern
+- [ ] Verified Graph context
+- [ ] Tested a read-only Graph request if authorized
+- [ ] Built an unattended script structure
+- [ ] Added context validation
+- [ ] Added error handling
+- [ ] Added logging
+- [ ] Reviewed secret-handling rules
+- [ ] Reviewed certificate expiration
+- [ ] Completed the automation design exercise
+- [ ] Completed the knowledge check
+- [ ] Built the reusable automation template
+
+---
 
 # Lab Complete
 
+You have completed **Lab 18 — App-Only Authentication and Automation**.
 
-------------------------------------------------------------------------
+You have also completed all 18 lessons and labs in the Microsoft Graph PowerShell course.
+
+Now bring the course together with the final capstone project.
+
+---
 
 # 🏆 Final Project — Microsoft Graph Automation Capstone
 
-You have completed all 18 lessons and labs in the Microsoft Graph PowerShell course.
-
-Now it's time to bring everything together in the final capstone project.
-
 ➡️ **[Project 05 — Microsoft Graph Automation Capstone](../projects/project-05-graph-automation-capstone.md)**
 
-In this project, you will combine the skills developed throughout the course to build a practical Microsoft Graph PowerShell automation and reporting solution.
+In the capstone, you will combine skills from across the course to build a practical Microsoft Graph PowerShell automation and reporting solution.
 
-You will apply concepts including:
-
-- Microsoft Graph authentication
-- Permissions and scopes
-- Command discovery
-- Users and groups
-- Microsoft 365 licensing
-- Devices
-- Applications and service principals
-- Directory roles
-- Microsoft 365 workloads
-- Advanced queries
-- Error handling
-- Reliable automation
-- App-only authentication
-
-This project is designed to demonstrate that you can move beyond individual commands and build a complete Microsoft Graph PowerShell solution.
-
-------------------------------------------------------------------------
-
-# 🎯 Finish Strong
-
-Complete the capstone without immediately returning to the lesson instructions whenever possible.
-
-Use the same tools you would use in a real environment:
+Use the same discovery and troubleshooting workflow you would use in a real administrative environment:
 
 ```text
 Get-Command
@@ -260,41 +970,6 @@ Test
 Troubleshoot
       ↓
 Improve
+```
 
-------------------------------------------------------------------------
-
-# 🎓 Course Complete!
-
-Congratulations — you have completed the **Microsoft Graph PowerShell Fundamentals** training course.
-
-You have progressed from making your first Microsoft Graph connection to building a complete Microsoft Graph PowerShell automation solution.
-
-## Where to Go Next
-
-Continue practicing by:
-
-- Building your own Microsoft 365 administration scripts
-- Automating repetitive IT tasks
-- Creating user, group, license, and device reports
-- Improving scripts with logging and error handling
-- Exploring additional Microsoft Graph APIs
-- Practicing app-only authentication
-- Reviewing the cheat sheet and course resources
-- Turning useful scripts into reusable IT administration tools
-
----
-
-# 📚 Course Resources
-
-➡️ **[Microsoft Graph PowerShell Cheat Sheet](../CheatSheet/cheatsheet.md)**
-
-➡️ **[Microsoft Graph PowerShell Resources](../resources/resources.md)**
-
-➡️ **[Return to Course Home](../README.md)**
-
----
-
-> The goal was never to memorize every Microsoft Graph command.  
-> The goal was to learn how to **find, understand, safely use, and automate them.**
-
-
+➡️ **[Begin Project 05 — Microsoft Graph Automation Capstone](../projects/project-05-graph-automation-capstone.md)**
